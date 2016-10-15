@@ -36,6 +36,17 @@
 #include <unistd.h>
 #endif
 
+namespace {
+    bool fileCanBeStated(const std::string &file)
+    {
+        struct stat buf;
+        memset(&buf, 0, sizeof(buf));
+        int result = stat(file.c_str(), &buf );
+
+        return result == 0;
+    }
+}
+
 std::string S3D::getHomeDir()
 {
 #ifdef _WIN32
@@ -79,12 +90,12 @@ bool S3D::removeFile(const std::string &file)
 
 bool S3D::fileExists(const std::string &file)
 {
-	return (S3D::fileModTime(file) != 0);
+	return fileCanBeStated(file);
 }
 
 bool S3D::dirExists(const std::string &file)
 {
-	return (S3D::fileModTime(file) != 0);
+	return fileCanBeStated(file);
 }
 
 time_t S3D::fileModTime(const std::string &file)
